@@ -26,11 +26,6 @@ pipeline {
                 dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'lab-test'
             }
         }
-        stage('Test') {
-            steps {
-                sh './vendor/bin/phpunit --log-junit logs/unitreport.xml -c tests/phpunit.xml tests'
-            }
-        }
         stage('Integration UI Test') {
             parallel {
                 stage('Deploy') {
@@ -63,7 +58,6 @@ pipeline {
     }
     post {
         always {
-            junit testResults: 'logs/unitreport.xml'
             junit testResults: '**/target/surefire-reports/TEST-*.xml'
             recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
             recordIssues enabledForFailure: true, tool: checkStyle()
